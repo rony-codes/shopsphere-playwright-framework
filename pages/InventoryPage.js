@@ -1,36 +1,45 @@
-export class InventoryPage{
-    constructor(page){
-        this.page = page
-        this.pageTitle = page.locator('[data-test="title"]')
-        this.productItems = page.locator('[data-test="inventory-item"]')
-        this.productNames = page.locator('[data-test="inventory-item-name"]')
-        this.productPrices = page.locator('[data-test="inventory-item-price"]')
-        this.productDescriptions = page.locator('[data-test="inventory-item-desc"]');
-        this.productImages = page.locator('.inventory_item_img img')
-        this.addToCartButtons = page.locator('.btn_inventory')
-        this.sortDropDown = page.locator('[data-test="product-sort-container"]')
-        this.shoppingCartBadge = page.locator('[data-test="shopping-cart-badge"]')
-    }
-    
-    async getProductCount(){
-        return await this.productItems.count()
-    }
+export class InventoryPage {
+  constructor(page) {
+    this.page = page;
+    this.pageTitle = page.locator('[data-test="title"]');
+    this.productItems = page.locator('[data-test="inventory-item"]');
+    this.productNames = page.locator('[data-test="inventory-item-name"]');
+    this.productPrices = page.locator('[data-test="inventory-item-price"]');
+    this.productDescriptions = page.locator(
+      '[data-test="inventory-item-desc"]',
+    );
+    this.productImages = page.locator(".inventory_item_img img");
+    this.addToCartButtons = page.locator(".btn_inventory");
+    this.sortDropDown = page.locator('[data-test="product-sort-container"]');
+    this.shoppingCartBadge = page.locator('[data-test="shopping-cart-badge"]');
+  }
 
-    async addFirstProductToCart(){
-        await this.addToCartButtons.first().click()
-    }
+  async getProductCount() {
+    return await this.productItems.count();
+  }
 
-    async getProductName(){
-        return await this.productNames.allTextContents();
-    }
+  async addFirstProductToCart() {
+    await this.addToCartButtons.first().click();
+  }
 
-    async getProductPrices(){
-        const prices = await this.productPrices.allTextContents();
-        return prices.map((price)=> Number(price.replace('$', '')))
-    }
+  async getProductName() {
+    return await this.productNames.allTextContents();
+  }
 
-    async sortProducts(option){
-        await this.sortDropDown.selectOption(option);
-    }
+  async getFirstProductName() {
+    return await this.productNames.first().textContent();
+  }
 
+  async getProductPrices() {
+    const prices = await this.productPrices.allTextContents();
+    return prices.map((price) => Number(price.replace("$", "")));
+  }
+  async getFirstProductPrice() {
+    const price = await this.productPrices.first().textContent();
+    return Number(price.replace("$", ""));
+  }
+
+  async sortProducts(option) {
+    await this.sortDropDown.selectOption(option);
+  }
 }

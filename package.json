@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-  "test": "playwright test",
-  "test:ui": "playwright test tests/ui",
-  "test:api": "playwright test tests/api",
-  "headed": "playwright test --headed",
-  "report": "playwright show-report"
-},
+    "test": "playwright test",
+    "test:ui": "playwright test tests/ui",
+    "test:api": "playwright test tests/api",
+    "headed": "playwright test --headed",
+    "report": "playwright show-report"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

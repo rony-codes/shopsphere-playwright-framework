@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import {test, expect} from "../../fixtures/uiFixtures.js"
 import { LoginPage } from "../../pages/LoginPage";
 import { InventoryPage } from "../../pages/InventoryPage";
 
@@ -10,50 +10,36 @@ const USER = {
 };
 
 test.describe("Inventory Module", () => {
-  test("TC-001:User should see 6 products after login", async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
-
-    await loginPage.goto();
-    await loginPage.login(USER.valid.username, USER.valid.password);
-
-    await expect(page).toHaveURL(/inventory/);
-    await expect(inventoryPage.pageTitle).toHaveText("Products");
-
-    const productCount = await inventoryPage.getProductCount();
+  test("TC-001:User should see 6 products after login", async ({loggedInInventoryPage}) => {
+    const productCount= await loggedInInventoryPage.getProductCount();
     expect(productCount).toBe(6);
   });
 
-  test("TC-002:Verify Product details", async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
-
-    await loginPage.goto();
-    await loginPage.login(USER.valid.username, USER.valid.password);
+  test("TC-002:Verify Product details", async ({ loggedInInventoryPage }) => {
 
     //NAME
-    const nameCount = await inventoryPage.productNames.count();
+    const nameCount = await loggedInInventoryPage.productNames.count();
     expect(nameCount).toBe(6);
     for (let i = 0; i < nameCount; i++) {
-      const productName = await inventoryPage.productNames.nth(i).textContent();
+      const productName = await loggedInInventoryPage.productNames.nth(i).textContent();
 
       expect(productName).not.toBe("");
     }
 
     //PRICE
-    const priceCount = await inventoryPage.productPrices.count();
+    const priceCount = await loggedInInventoryPage.productPrices.count();
     expect(priceCount).toBe(6);
     for (let i = 0; i < priceCount; i++) {
-      const price = await inventoryPage.productPrices.nth(i).textContent();
+      const price = await loggedInInventoryPage.productPrices.nth(i).textContent();
 
       expect(price).toContain("$");
     }
 
     //Description
-    const descriptionCount = await inventoryPage.productDescriptions.count();
+    const descriptionCount = await loggedInInventoryPage.productDescriptions.count();
     expect(descriptionCount).toBe(6);
     for (let i = 0; i < descriptionCount; i++) {
-      const desciption = await inventoryPage.productDescriptions
+      const desciption = await loggedInInventoryPage.productDescriptions
         .nth(i)
         .textContent();
 
@@ -61,108 +47,79 @@ test.describe("Inventory Module", () => {
     }
 
     //Images
-    const imagesCount = await inventoryPage.productImages.count();
+    const imagesCount = await loggedInInventoryPage.productImages.count();
     expect(imagesCount).toBe(6);
     for (let i = 0; i < imagesCount; i++) {
-      await expect(inventoryPage.productImages.nth(i)).toBeVisible();
+      await expect(loggedInInventoryPage.productImages.nth(i)).toBeVisible();
     }
 
     //buttons
-    const buttonCount = await inventoryPage.addToCartButtons.count();
+    const buttonCount = await loggedInInventoryPage.addToCartButtons.count();
     expect(buttonCount).toBe(6);
 
     for (let i = 0; i < buttonCount; i++) {
-      await expect(inventoryPage.addToCartButtons.nth(i)).toBeVisible();
+      await expect(loggedInInventoryPage.addToCartButtons.nth(i)).toBeVisible();
     }
   });
 
-  test("TC-007 User should add product to cart", async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
+  test("TC-007 User should add product to cart", async ({ loggedInInventoryPage }) => {
 
-    await loginPage.goto();
-    await loginPage.login(USER.valid.username, USER.valid.password);
+    await loggedInInventoryPage.addFirstProductToCart();
 
-    await inventoryPage.addFirstProductToCart();
-
-    await expect(inventoryPage.shoppingCartBadge).toHaveText("1");
+    await expect(loggedInInventoryPage.shoppingCartBadge).toHaveText("1");
   });
 
-  test("TC-008 User should remove product to cart", async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
+  test("TC-008 User should remove product to cart", async ({ loggedInInventoryPage }) => {
 
-    await loginPage.goto();
-    await loginPage.login(USER.valid.username, USER.valid.password);
+    await loggedInInventoryPage.addFirstProductToCart();
 
-    await inventoryPage.addFirstProductToCart();
+    await expect(loggedInInventoryPage.shoppingCartBadge).toHaveText("1");
 
-    await expect(inventoryPage.shoppingCartBadge).toHaveText("1");
+    await loggedInInventoryPage.addToCartButtons.first().click();
 
-    await inventoryPage.addToCartButtons.first().click();
+    await expect(loggedInInventoryPage.shoppingCartBadge).toHaveCount(0);
 
-    await expect(inventoryPage.shoppingCartBadge).toHaveCount(0);
-
-    await expect(inventoryPage.addToCartButtons.first()).toHaveText(
+    await expect(loggedInInventoryPage.addToCartButtons.first()).toHaveText(
       "Add to cart",
     );
   });
 
-  test("TC-003: User should sort products from A to Z", async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
+  test("TC-003: User should sort products from A to Z", async ({ loggedInInventoryPage }) => {
 
-    await loginPage.goto();
-    await loginPage.login(USER.valid.username, USER.valid.password);
+    await loggedInInventoryPage.sortProducts("az");
 
-    await inventoryPage.sortProducts("az");
-
-    const acutalNames = await inventoryPage.getProductName();
+    const acutalNames = await loggedInInventoryPage.getProductName();
     const expectedNames = [...acutalNames].sort();
 
     expect(acutalNames).toEqual(expectedNames);
   });
 
-  test("TC-004: User should sort products from Z to A", async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
+  test("TC-004: User should sort products from Z to A", async ({ loggedInInventoryPage }) => {
 
-    await loginPage.goto();
-    await loginPage.login(USER.valid.username, USER.valid.password);
+    await loggedInInventoryPage.sortProducts("za");
 
-    await inventoryPage.sortProducts("za");
-
-    const acutalNames = await inventoryPage.getProductName();
+    const acutalNames = await loggedInInventoryPage.getProductName();
     const expectedNames = [...acutalNames].sort().reverse();
 
     expect(acutalNames).toEqual(expectedNames);
   });
 
-  test("TC-005: User should sort products by price low to high", async ({page,}) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
+  test("TC-005: User should sort products by price low to high", async ({loggedInInventoryPage}) => {
 
-    await loginPage.goto();
-    await loginPage.login(USER.valid.username, USER.valid.password);
 
-    await inventoryPage.sortProducts("lohi");
+    await loggedInInventoryPage.sortProducts("lohi");
 
-    const actualPrices = await inventoryPage.getProductPrices();
+    const actualPrices = await loggedInInventoryPage.getProductPrices();
     const expectedPrices = [...actualPrices].sort((a, b) => a - b);
 
     expect(actualPrices).toEqual(expectedPrices);
   });
 
-  test("TC-006: User should sort products by price high to low", async ({page,}) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
+  test("TC-006: User should sort products by price high to low", async ({loggedInInventoryPage}) => {
 
-    await loginPage.goto();
-    await loginPage.login(USER.valid.username, USER.valid.password);
+    await loggedInInventoryPage.sortProducts("hilo");
 
-    await inventoryPage.sortProducts("hilo");
-
-    const actualPrices = await inventoryPage.getProductPrices();
+    const actualPrices = await loggedInInventoryPage.getProductPrices();
     const expectedPrices = [...actualPrices].sort((a, b) => b - a);
 
     expect(actualPrices).toEqual(expectedPrices);

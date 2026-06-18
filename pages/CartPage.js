@@ -37,4 +37,8 @@ export class CartPage {
   async continueShopping() {
     await this.continueShoppingButton.click();
   }
+
+  async clickCheckOut(){
+    await this.checkoutButton.click();
+  }
 }

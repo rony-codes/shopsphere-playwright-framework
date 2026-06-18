@@ -1,20 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../pages/LoginPage.js';
-
-const USER = {
-  valid: {
-    username: 'standard_user',
-    password: 'secret_sauce',
-  },
-  invalid: {
-    username: 'invalidUsername',
-    password: 'invalidpassword',
-  },
-  lockedOut: {
-    username: 'locked_out_user',
-    password: 'secret_sauce',
-  },
-};
+import { USERS } from '../../test-data/users.js';
 
 test.describe('Login Module', () => {
   test('TC-001: User should login successfully with valid credentials', async ({ page }) => {
@@ -23,7 +9,7 @@ test.describe('Login Module', () => {
     await loginPage.goto();
 
     // Act
-    await loginPage.login(USER.valid.username, USER.valid.password);
+    await loginPage.login(USERS.valid.username, USERS.valid.password);
 
     // Assert
     await expect(page).toHaveURL(/inventory/);
@@ -36,7 +22,7 @@ test.describe('Login Module', () => {
     await loginPage.goto();
 
     // Act
-    await loginPage.login(USER.invalid.username, USER.valid.password);
+    await loginPage.login(USERS.invalid.username, USERS.valid.password);
 
     // Assert
     await expect(loginPage.errorMessage).toHaveText(
@@ -51,7 +37,7 @@ test.describe('Login Module', () => {
     await loginPage.goto();
 
     // Act
-    await loginPage.login(USER.valid.username, USER.invalid.password);
+    await loginPage.login(USERS.valid.username, USERS.invalid.password);
 
     // Assert
     await expect(loginPage.errorMessage).toHaveText(
@@ -66,7 +52,7 @@ test.describe('Login Module', () => {
     await loginPage.goto();
 
     // Act
-    await loginPage.login('', USER.valid.password);
+    await loginPage.login('', USERS.valid.password);
 
     // Assert
     await expect(loginPage.errorMessage).toHaveText(
@@ -81,7 +67,7 @@ test.describe('Login Module', () => {
     await loginPage.goto();
 
     // Act
-    await loginPage.login(USER.valid.username, '');
+    await loginPage.login(USERS.valid.username, '');
 
     // Assert
     await expect(loginPage.errorMessage).toHaveText(
@@ -96,7 +82,7 @@ test.describe('Login Module', () => {
     await loginPage.goto();
 
     // Act
-    await loginPage.login(USER.lockedOut.username, USER.lockedOut.password);
+    await loginPage.login(USERS.lockedOut.username, USERS.lockedOut.password);
 
     // Assert
     await expect(loginPage.errorMessage).toHaveText(

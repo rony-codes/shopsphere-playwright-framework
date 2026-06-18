@@ -3,13 +3,8 @@ import { LoginPage } from "../pages/LoginPage.js";
 import { InventoryPage } from "../pages/InventoryPage.js";
 import { CartPage } from "../pages/CartPage.js";
 import { CheckoutPage } from "../pages/CheckoutPage.js";
+import { USERS } from "../test-data/users.js";
 
-const USER = {
-  valid: {
-    username: "standard_user",
-    password: "secret_sauce",
-  },
-};
 
 export const test = base.extend({
   loggedInInventoryPage: async ({ page }, use) => {
@@ -17,7 +12,7 @@ export const test = base.extend({
     const inventoryPage = new InventoryPage(page);
 
     await loginPage.goto();
-    await loginPage.login(USER.valid.username, USER.valid.password);
+    await loginPage.login(USERS.valid.username, USERS.valid.password);
 
     await use(inventoryPage);
   },
@@ -28,7 +23,7 @@ export const test = base.extend({
     const cartPage = new CartPage(page);
 
     await loginPage.goto();
-    await loginPage.login(USER.valid.username, USER.valid.password);
+    await loginPage.login(USERS.valid.username, USERS.valid.password);
 
     await inventoryPage.addFirstProductToCart();
     await cartPage.openCart();
@@ -43,7 +38,7 @@ export const test = base.extend({
     const checkoutPage = new CheckoutPage(page);
 
     await loginPage.goto();
-    await loginPage.login(USER.valid.username, USER.valid.password);
+    await loginPage.login(USERS.valid.username, USERS.valid.password);
 
     await inventoryPage.addFirstProductToCart();
     await cartPage.openCart();

@@ -2,13 +2,6 @@ import {test, expect} from "../../fixtures/uiFixtures.js"
 import { LoginPage } from "../../pages/LoginPage";
 import { InventoryPage } from "../../pages/InventoryPage";
 
-const USER = {
-  valid: {
-    username: "standard_user",
-    password: "secret_sauce",
-  },
-};
-
 test.describe("Inventory Module", () => {
   test("TC-001:User should see 6 products after login", async ({loggedInInventoryPage}) => {
     const productCount= await loggedInInventoryPage.getProductCount();

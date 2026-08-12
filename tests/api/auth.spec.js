@@ -24,6 +24,7 @@ test.describe("Authentication API", () => {
     expect(typeof body.accessToken).toBe("string");
     expect(body.accessToken).not.toBe("");
   });
+  
   test("TC-002: User should fetch authenticated profile using token", async ({request}) => {
     const authAPI = new Authapi(request);
     const loginResponse = await authAPI.login(AUTH_USER.username,AUTH_USER.password);

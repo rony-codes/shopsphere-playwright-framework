@@ -2,6 +2,7 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests",
+
   use: {
     baseURL: "https://www.saucedemo.com",
     headless: !!process.env.CI,
@@ -9,4 +10,14 @@ export default defineConfig({
     video: "retain-on-failure",
     trace: "on-first-retry",
   },
+
+  reporter: [
+    ["html"],
+    [
+      "allure-playwright",
+      {
+        resultsDir: "allure-results",
+      },
+    ],
+  ],
 });
